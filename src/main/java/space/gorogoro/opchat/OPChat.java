@@ -36,10 +36,6 @@ public class OPChat extends JavaPlugin {
   public boolean onCommand( CommandSender sender, Command command, String label, String[] args) {
     // Return true:Success false:Show the usage set in plugin.yml
     try{
-      if(!command.getName().equals("o")) {
-        return true;
-      }
-
       if(!sender.isOp()) {
         return true;
       }
@@ -48,22 +44,37 @@ public class OPChat extends JavaPlugin {
         return true;
       }
 
-      for(Player p: getServer().getOnlinePlayers()) {
-        if(!p.isOp()) {
-          continue;
-        }
+      if(command.getName().equals("o")) {
+        for(Player p: getServer().getOnlinePlayers()) {
+          if(!p.isOp()) {
+            continue;
+          }
 
-        p.sendMessage(
-          ChatColor.AQUA
-          + "[OP] "
-          + ChatColor.RESET
-          + sender.getName()
-          + ChatColor.GREEN
-          + ": "
-          + ChatColor.RESET
-          +  String.join(" ", args)
-        );
+          p.sendMessage(
+            ChatColor.AQUA
+            + "[OP] "
+            + ChatColor.RESET
+            + sender.getName()
+            + ChatColor.GREEN
+            + ": "
+            + ChatColor.RESET
+            +  String.join(" ", args)
+          );
+        }
+      } else if(command.getName().equals("url")) {
+        if(sender.isOp()) {
+          for(Player p: getServer().getOnlinePlayers()) {
+            p.sendMessage(
+              sender.getName()
+              + ChatColor.GREEN
+              + ": "
+              + ChatColor.RESET
+              +  String.join(" ", args)
+            );
+          }
+        }
       }
+
     }catch(Exception e){
       logStackTrace(e);
     }

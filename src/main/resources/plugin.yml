@@ -10,3 +10,6 @@ commands:
   o:
     description: Operator's chat system.
     usage: /<command> <message>
+  url:
+    description: Post url
+    usage: /<command> <message>
