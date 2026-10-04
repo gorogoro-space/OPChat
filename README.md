@@ -1,5 +1,5 @@
 # OPChat
-[![Spigot 1.19.1](https://img.shields.io/badge/Spigot-1.19.1-brightgreen.svg)](https://www.spigotmc.org/)
+[![Paper 1.21.11](https://img.shields.io/badge/Paper-1.21.11-brightgreen.svg)](https://fill-ui.papermc.io/projects/paper/version/1.21.11)
 [![GitHub release](https://img.shields.io/github/release/gorogoro-space/OPChat.svg)](https://github.com/gorogoro-space/OPChat/releases)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/gorogoro-space/OPChat/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/gorogoro-space/OPChat/blob/main/LICENSE)
@@ -9,13 +9,13 @@ Operator chat system.
 OP(オペレーター)どうしだけで会話できるチャットと、OP から全員へメッセージを流すコマンドを追加するプラグインです。
 
 # Requirements
-- Spigot / Paper 1.19.1 以降(`api-version: 1.15`)
-- Java 8 以降
+- Paper 1.21.11
+- Java 21
 
 # Installation method
-Please place the .jar file in the plugins folder.
+Please place the .jar file in the Paper plugins folder.
 
-.jar ファイルをサーバーの plugins フォルダに置き、サーバーを再起動してください。
+.jar ファイルを Paper の plugins フォルダに置き、サーバーを再起動してください。
 
 # Usage
 ```
@@ -32,27 +32,33 @@ Please place the .jar file in the plugins folder.
 # Disclaimer
 Do not assume any responsibility by use. Please use it at your own risk.
 
+## ビルド
+
+JDK 21 が必要です。Gradle はラッパー(`gradlew`)が自動でダウンロードするので、別途インストールする必要はありません。
+
+```
+gradlew.bat clean build
+```
+
+(macOS / Linux では `./gradlew clean build`)
+
 ## IntelliJ IDEA でのビルド手順
 
-本プロジェクトはビルドツールに Maven を使用しています。
+本プロジェクトはビルドツールに Gradle を使用しています。
 IntelliJ IDEA 上で正しくプラグイン（JARファイル）を生成するには、以下の手順を実行してください。
-
-### 🚨 注意：Plugins ではなく Lifecycle を使用してください
-Maven ツールウィンドウ内の `Plugins` -> `jar:jar` を直接実行すると、コンパイルが行われず中身が空の JAR ファイルが生成されてしまいます。
-必ず以下の手順通り **`Lifecycle`** を使用してください。
-「ビルド → アーティファクトのビルド」もクラスファイルが入らないことがあるので使わないでください。
+「ビルド → アーティファクトのビルド」はクラスファイルが入らないことがあるので使わないでください。
 
 ### 🛠️ ビルド手順
 
-1. IntelliJ IDEA の画面右端にある **「Maven」タブ** をクリックして開きます。
-2. プロジェクト名（OPChat）を展開し、 **`Lifecycle`（ライフサイクル）** ツリーを開きます。
+1. IntelliJ IDEA の画面右端にある **「Gradle」タブ** をクリックして開きます。
+2. プロジェクト名（OPChat）を展開し、 **`Tasks`** ツリーを開きます。
 3. リスト内にある **`clean`** をダブルクリックして実行します（古いビルドキャッシュを削除します）。
-4. 続けてリスト内にある **`package`** をダブルクリックして実行します。
+4. 続けてリスト内にある **`build`** をダブルクリックして実行します。
 
 ### 📦 生成されたファイルの場所
-ビルドが成功すると、プロジェクトのルート直下に `target` フォルダが作成（または更新）され、その中に中身の詰まった正しい JAR ファイルが生成されます。
+ビルドが成功すると、プロジェクトのルート直下に `build/libs` フォルダが作成（または更新）され、その中に中身の詰まった正しい JAR ファイルが生成されます。
 
-* **生成先:** `target/OPChat-1.0.jar`
+* **生成先:** `build/libs/OPChat-<version>.jar`(例: `OPChat-1.0.jar`。バージョンは `gradle.properties` の `version`)
 
 この JAR ファイルを Minecraft サーバーの `plugins` フォルダに配置してください。
 

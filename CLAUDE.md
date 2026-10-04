@@ -1,6 +1,6 @@
 # OPChat
 
-OP(オペレーター)だけが読めるチャット `/o` と、OP が全員にメッセージを流す `/url` を提供する Bukkit 用プラグイン。
+OP(オペレーター)だけが読めるチャット `/o` と、OP が全員にメッセージを流す `/url` を提供する Paper 用プラグイン(Paper 1.21.11 以降・Java 21 必須)。
 リポジトリ: https://github.com/gorogoro-space/OPChat (GPL-3.0)
 
 ## 作業の進め方(必ず守ること)
@@ -23,12 +23,12 @@ OP(オペレーター)だけが読めるチャット `/o` と、OP が全員に�
 
 ## 環境
 
-- Spigot API 1.19.1(`org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT`、`provided`)/ `plugin.yml` の `api-version: 1.15`
-- Java: `pom.xml` の `maven-compiler-plugin` で source / target 1.8
-- ビルド: Maven。`mvn` は PATH に無いので、IntelliJ IDEA の Maven ツールウィンドウで `Lifecycle` → `clean` → `package` を実行する。「ビルドして」と言われたら常にクリーンビルドする。成果物は `target/OPChat-<version>.jar`
-  - `Plugins` → `jar:jar` を直接実行すると、コンパイルされず中身が空の jar ができる
-  - IntelliJ の「アーティファクトのビルド」もクラスファイルが入らないことがあるので使わない
-- バージョンは `pom.xml` の `version` と `plugin.yml` の `version` の 2 か所にある(自動で揃わない)。上げるときは両方を変える
+- Paper 1.21.11(`io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT`、`compileOnly`)/ `plugin.yml` の `api-version: '1.21.11'`(1.21.11 未満のサーバーでは読み込まれない)
+- **Java 21 必須。** `build.gradle.kts` の toolchain で JDK 21 を使い、Java 21 の class ファイルを出力する。勝手に変えない
+- ビルド: Gradle(Kotlin DSL、wrapper 9.7.1)。`gradlew.bat clean build`(Windows)。**JDK 21 で実行する**(`JAVA_HOME` を `C:\Program Files\Java\jdk-21` にする。既定の `java` は JDK 27)。「ビルドして」と言われたら常にクリーンビルドする。成果物は `build/libs/OPChat-<version>.jar`
+  - IntelliJ の「アーティファクトのビルド」はクラスファイルが入らないことがある。必ず Gradle でビルドする
+- バージョンは `gradle.properties` の `version` だけで管理する。`plugin.yml` の `version: '${version}'` は `processResources` でビルド時に置き換わる
+- `ChatColor` など非推奨の API を使っているため、コンパイル時に deprecation の警告が出る(Maven から Gradle に移したときからそのまま。直すのは頼まれたとき)
 - パッケージ: `space.gorogoro.opchat`(**すべて小文字**。大文字が混ざると plugin.yml の main と一致せず起動しない)
 - 動作確認はサーバーを再起動して行う。PlugManX での読み込みは権限やコマンドの登録が不完全になることがある
 
@@ -67,4 +67,4 @@ OP(オペレーター)だけが読めるチャット `/o` と、OP が全員に�
 
 - `src/main/java/space/gorogoro/opchat/OPChat.java` — メインクラス。コマンド処理をすべて持つ
 - `src/main/resources/plugin.yml` — プラグイン定義、コマンド定義(`o`、`url`)
-- `pom.xml` — Maven の設定
+- `build.gradle.kts` / `settings.gradle.kts` / `gradle.properties` — Gradle の設定(バージョンは `gradle.properties`)
