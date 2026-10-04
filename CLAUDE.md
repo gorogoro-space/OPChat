@@ -42,8 +42,9 @@ OP(オペレーター)だけが読めるチャット `/o` と、OP が全員に�
 - 定期タスクは最小限にし、追加するときは頻度と理由を設計案に書く
 
 ### データの保存
-- 現在は何も保存しない(設定ファイルもない)
-- 保存が必要になった場合も、プラグインフォルダ以外には何も書き込まない
+- `plugins/OPChat/config.yml` に `off-players`(OFF の人)と `notified-players`(OFF の案内を表示済みの人)を UUID のリストで保存する。jar に config.yml は同梱していない(無ければ空として扱う)
+- `getConfig()` の更新と YAML 文字列への変換はメインスレッドで行い、ファイルへの書き込みだけを専用スレッド `OPChat-Save`(1 本)で行う。書き込み待ちが残っている間の変更は、最新の内容で 1 回にまとめて書き込む。停止時は書き込み待ちが終わるまで最大 10 秒待つ
+- プラグインフォルダ以外には何も書き込まない
 
 ### 他プラグインとの関係
 - 既存の機能(例: GSit、看板の click_event など)を妨げないこと。イベントをキャンセルする範囲は必要最小限にする
@@ -52,9 +53,13 @@ OP(オペレーター)だけが読めるチャット `/o` と、OP が全員に�
 
 (現在の実装の動作。仕様を変えたらここを更新する)
 
-- **`/o <message>`**: オンラインの OP 全員に `[OP] <送信者名>: <メッセージ>` を送る(`[OP]` は水色、`:` は緑)。OP 以外が実行しても何も起きない(エラーも出さない)
+- **`/o <message>`**: オンラインの OP 全員(OFF の人を除く)に `[OP] <送信者名>: <メッセージ>` を送る(`[OP]` は水色、`:` は緑)。OP 以外が実行しても何も起きない(エラーも出さない)。OFF の人が実行すると送信せず、本人に案内を出す
+- **`/opchatoff`**: OP チャットの ON / OFF を切り替える(配信時に OP チャットを映さないため)。OP のみ、プレイヤーのみ(コンソールからは不可)。引数なし
+  - OFF にすると `off-players` に追加。ON に戻すと `off-players` と `notified-players` の両方から消す
+  - ログイン時(`PlayerJoinEvent`)、OP で、OFF で、`notified-players` に入っていない本人にだけ「OPチャットがOFFです」を 1 回表示し、`notified-players` に追加する(以降は再ログインしても出さない。ON → OFF にし直すとまた 1 回出る)。OP を外された人には出さず、印も付けない(OFF の設定は残るので、OP に戻ったときに 1 回出る)
+  - `/url` は OFF でも届く
 - **`/url <message>`**: OP が実行すると、オンラインの全員に `<送信者名>: <メッセージ>` を送る(`:` は緑)。OP 以外が実行しても何も起きない
-- 共通: 引数がなければ何もしない(usage も出さない。`onCommand` は常に true を返す)。権限ノードは使わず、`isOp()` で判定している(plugin.yml に permission の定義はない)
+- 共通: `/o`・`/url` は引数がなければ何もしない(usage も出さない。`onCommand` は常に true を返す)。権限ノードは使わず、`isOp()` で判定している(plugin.yml に permission の定義はない)
 - 例外は `logStackTrace` でスタックトレースを警告ログに出す
 
 ## 過去にハマった点(他プロジェクトでの経験)
@@ -65,6 +70,6 @@ OP(オペレーター)だけが読めるチャット `/o` と、OP が全員に�
 
 ## ファイル構成
 
-- `src/main/java/space/gorogoro/opchat/OPChat.java` — メインクラス。コマンド処理をすべて持つ
-- `src/main/resources/plugin.yml` — プラグイン定義、コマンド定義(`o`、`url`)
+- `src/main/java/space/gorogoro/opchat/OPChat.java` — メインクラス。コマンド処理、ログイン時の案内、config.yml の保存をすべて持つ
+- `src/main/resources/plugin.yml` — プラグイン定義、コマンド定義(`o`、`url`、`opchatoff`)
 - `build.gradle.kts` / `settings.gradle.kts` / `gradle.properties` — Gradle の設定(バージョンは `gradle.properties`)

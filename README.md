@@ -21,13 +21,22 @@ Please place the .jar file in the Paper plugins folder.
 ```
 /o <message>     OP 全員にだけメッセージを送ります
 /url <message>   OP が全員にメッセージ(URL など)を送ります
+/opchatoff       OP チャットの ON / OFF を切り替えます(配信時など)
 ```
-- どちらも OP だけが使えます。OP 以外が実行しても何も起きません
+- どのコマンドも OP だけが使えます。OP 以外が実行しても何も起きません
 - `/o` のメッセージは `[OP] 名前: メッセージ` の形で、オンラインの OP 全員に届きます
 - `/url` のメッセージは `名前: メッセージ` の形で、オンラインの全員に届きます
+- `/opchatoff` で OFF にすると、`/o` のメッセージが届かなくなり、自分も `/o` で送れなくなります。もう一度実行すると ON に戻ります
+  - OFF の設定は、ログアウトやサーバーの再起動をしても残ります
+  - OFF にしてから初めてログインしたときに、本人にだけ「OPチャットがOFFです」と 1 回だけ表示します(OP でない間は表示しません)。その後は再ログインしても表示しません(ON に戻して再び OFF にすると、次のログインでまた 1 回表示します)
+  - `/url` のメッセージは OFF でも届きます
 
 # Data
-何も保存しません(設定ファイルもありません)。
+`plugins/OPChat/config.yml` に以下を保存します。
+- `off-players` — OP チャットを OFF にしているプレイヤーの UUID
+- `notified-players` — OFF の案内をログイン時に表示済みのプレイヤーの UUID
+
+書き込みは専用スレッドで、切り替えたとき・案内を表示したときに行います。
 
 # Disclaimer
 Do not assume any responsibility by use. Please use it at your own risk.

@@ -13,3 +13,6 @@ commands:
   url:
     description: Post url
     usage: /<command> <message>
+  opchatoff:
+    description: OPチャットの ON / OFF を切り替えます(配信時など)
+    usage: /<command>
