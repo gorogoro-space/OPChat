@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /*
  * OPChat
- * @license    LGPv3
+ * @license    GPL-3.0
  * @copyright  Copyright gorogoro.space 2021
  * @author     kubotan
  * @see        <a href="https://gorogoro.space">Gorogoro Server.</a>
